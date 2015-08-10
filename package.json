@@ -1,0 +1,15 @@
+{
+  "name": "screeps",
+  "version": "1.0.0",
+  "description": "Screeps code",
+  "license": "MIT",
+  "main": "index.js",
+  "repository": "http://github.com/bmonkman/Screeps",
+  "scripts": {
+    "start": "npm run build && grunt"
+  },
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-screeps": "^1.1.0"
+}
+}
