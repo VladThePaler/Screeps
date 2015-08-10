@@ -5,7 +5,6 @@ var creds = require("./creds.json");
  "password": "somepassword"
  }
 */
-console.log(creds);
 module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-screeps');
