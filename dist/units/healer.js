@@ -1,10 +1,11 @@
 // Game.spawns.Spawn1.createCreep( [HEAL, MOVE], 'Healer1', {'role':'healer'} );
+var retreatDistance = 3;
 
 module.exports = function (creep) {
     var friendlyCreeps = creep.room.find(FIND_MY_CREEPS);
 
     // If we're too close to an enemy, run home
-    if (creep.pos.findInRange(FIND_HOSTILE_CREEPS, 3)) {
+    if (creep.pos.findInRange(FIND_HOSTILE_CREEPS, retreatDistance).length > 0) {
         creep.moveTo(Game.spawns.Spawn1);
     } else {
         // Otherwise find a friendly wounded creep and move toward it
@@ -12,6 +13,7 @@ module.exports = function (creep) {
             var friendlyCreep = friendlyCreeps[i];
             if (friendlyCreep.hits < friendlyCreep.hitsMax) {
                 creep.moveTo(friendlyCreep);
+                console.log("healer - move to "+friendlyCreep.name);
             }
         }
     }
@@ -36,8 +38,8 @@ module.exports = function (creep) {
     if (bestMeleeTarget) creep.heal(bestMeleeTarget);
     else creep.rangedHeal(bestRangedTarget);
 
-    // If noone is hurt, just move to the nearest melee unit
+    // If no one is hurt, just move to the nearest melee unit
     if (!bestMeleeTarget && !bestRangedTarget) {
-        creep.moveTo(creep.pos.findClosest(FIND_MY_CREEPS, {'role':'meleeSpawnPatrol'}));
+        creep.moveTo(creep.pos.findClosest(FIND_MY_CREEPS, {filter: { memory: { role:'meleeSpawnPatrol'} } }));
     }
 };

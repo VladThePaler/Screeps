@@ -21,7 +21,10 @@ function ensureCreeps()
     else if (!Game.creeps['Healer1'])
         Game.spawns.Spawn1.createCreep( [HEAL, MOVE], 'Healer1', {'role':'healer'} );
 
-    else if (Game.spawns.Spawn1.energy == Game.spawns.Spawn1.energyCapacity) {
+    else if (!Game.creeps['RangedSpawnPatrol1'])
+        Game.spawns.Spawn1.createCreep( [RANGED_ATTACK, TOUGH, MOVE, MOVE], 'RangedSpawnPatrol1', {'role':'rangedSpawnPatrol', 'tags':['combat']} );
+
+    else if (Game.spawns.Spawn1.energy > Game.spawns.Spawn1.energyCapacity) {
         console.log("Maxed resources, spawning more melee defenders");
         Game.spawns.Spawn1.createCreep( [ATTACK, ATTACK, TOUGH, TOUGH, MOVE], 'MeleeSpawnPatrol'+Game.creeps.length+1, {'role':'meleeSpawnPatrol'} );
     }
