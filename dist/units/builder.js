@@ -10,10 +10,23 @@ module.exports = function (creep) {
             Game.spawns.Spawn1.transferEnergy(creep, creep.carryCapacity);
         }
     } else {
+        var structuresNeedRepair = creep.room.find(FIND_MY_STRUCTURES, {
+            filter: function(i) {
+                return i.needsRepair() && i.structureType != STRUCTURE_WALL && i.structureType != STRUCTURE_RAMPART;
+            }
+        });
+
+        // If a structure needs repair, find the one in most need of repair - this takes precedence
+        if (structuresNeedRepair.length > 0){
+            var repairStructure = structuresNeedRepair.sort(function(a,b) { return (a.hits/a.hitsMax) - (b.hits/b.hitsMax);})[0];
+            creep.moveTo(repairStructure);
+            creep.repair(repairStructure);
+            return;
+        }
 
         // Find the site that is the furthest built and focus on that
         var sites = creep.room.find(FIND_CONSTRUCTION_SITES).sort(function (a, b) {
-            return a.progress > b.progress
+            return a.progress - b.progress;
         });
         if (sites.length > 0) {
             // If there has not been any progress, pick the closest target
@@ -21,13 +34,30 @@ module.exports = function (creep) {
             creep.moveTo(site);
             creep.build(site);
         } else {
-            // If there are no constructions, upgrade the controller
-            var controller = creep.room.find(FIND_STRUCTURES, {
-                filter: {structureType: STRUCTURE_CONTROLLER}
-            });
 
-            creep.moveTo(controller[0]);
-            creep.upgradeController(controller[0]);
+            if (creep.memory.shouldUpgradeController) {
+                // If there are no constructions, upgrade the controller
+                var controller = creep.room.find(FIND_STRUCTURES, {
+                    filter: {structureType: STRUCTURE_CONTROLLER}
+                });
+
+                creep.moveTo(controller[0]);
+                creep.upgradeController(controller[0]);
+            } else {
+                // If there is nothing left to do, and the creep isn't designated to upgrade, build up walls
+                var reinforce = creep.room.find(FIND_MY_STRUCTURES, {
+                    filter: function(i) {
+                        return (i.structureType == STRUCTURE_RAMPART || i.structureType == STRUCTURE_WALL);
+                    }
+                });
+
+                // @TODO : Make this more efficient so they don't hop around as much
+                if (reinforce.length > 0){
+                    var reinforceStructure = reinforce.sort(function(a,b) { return (a.hits/a.hitsMax) - (b.hits/b.hitsMax);})[0];
+                    creep.moveTo(reinforceStructure);
+                    creep.repair(reinforceStructure);
+                }
+            }
         }
     }
 };

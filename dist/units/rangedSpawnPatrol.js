@@ -15,6 +15,8 @@ var oppositeDirections = [
     BOTTOM_RIGHT
 ];
 
+// @TODO : Add wall watcher ranged type, modulo to spread around ramparts (how does this work with contiguous rampart chunks?)
+
 module.exports = function (creep) {
     var hostileCreeps = creep.pos.findInRange(FIND_HOSTILE_CREEPS, maxApproachRange);
 
@@ -39,6 +41,7 @@ module.exports = function (creep) {
         creep.rangedAttack(hostileCreep);
     }
     else {
-        creep.moveTo(Game.spawns.Spawn1);
+        var rallyPoint = (creep.room.find(FIND_FLAGS).length > 0) ? creep.pos.findClosest(FIND_FLAGS) : Game.spawns.Spawn1;
+        creep.moveTo(rallyPoint);
     }
 };
