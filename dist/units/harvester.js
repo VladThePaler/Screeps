@@ -1,4 +1,4 @@
-// Game.spawns.Spawn1.createCreep( [WORK, CARRY, MOVE], 'Harvester1', {'role':'harvester'} );
+// Game.spawns.Spawn1.createCreep( [WORK, CARRY, MOVE], 'Harvester1', {'role':'harvester', 'tags':['worker']} );
 
 module.exports = function (creep) {
 
