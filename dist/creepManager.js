@@ -31,6 +31,21 @@ module.exports = {
         if (!Game.creeps['Harvester3'])
             Game.spawns.Spawn1.createCreep( [WORK, CARRY, MOVE], 'Harvester3', {role:'harvester', tags:['worker']} );
 
+        else if (!Game.creeps['Builder3'])
+            Game.spawns.Spawn1.createCreep( [WORK, CARRY, MOVE], 'Builder3', {role:'builder', tags:['worker']} );
+
+        else if (!Game.creeps['BuilderC'])
+            Game.spawns.Spawn1.createCreep( [WORK, CARRY, MOVE], 'BuilderC', {role:'builder', tags:['worker'], shouldUpgradeController:true} );
+
+        if (!Game.creeps['Harvester4'])
+            Game.spawns.Spawn1.createCreep( [WORK, CARRY, MOVE], 'Harvester4', {role:'harvester', tags:['worker']} );
+
+        else if (!Game.creeps['BuilderC2'])
+            Game.spawns.Spawn1.createCreep( [WORK, CARRY, MOVE], 'BuilderC2', {role:'builder', tags:['worker'], shouldUpgradeController:true} );
+
+        else if (!Game.creeps['BuilderC3'])
+            Game.spawns.Spawn1.createCreep( [WORK, CARRY, MOVE], 'BuilderC3', {role:'builder', tags:['worker'], shouldUpgradeController:true} );
+
         //else if (!Game.creeps['MeleeSpawnPatrol1'])
         //Game.spawns.Spawn1.createCreep( [ATTACK, TOUGH, MOVE], 'MeleeSpawnPatrol1', {role:'meleeSpawnPatrol', tags:['combat']} );
 

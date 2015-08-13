@@ -45,17 +45,20 @@ module.exports = function (creep) {
                 creep.upgradeController(controller[0]);
             } else {
                 // If there is nothing left to do, and the creep isn't designated to upgrade, build up walls
-                var reinforce = creep.room.find(FIND_MY_STRUCTURES, {
+                var reinforce = Game.spawns.Spawn1.pos.findClosest(FIND_MY_STRUCTURES, {
                     filter: function(i) {
-                        return (i.structureType == STRUCTURE_RAMPART || i.structureType == STRUCTURE_WALL);
+                        return (i.hits < i.hitsMax) && (i.structureType == STRUCTURE_RAMPART || i.structureType == STRUCTURE_WALL);
                     }
                 });
 
-                // @TODO : Make this more efficient so they don't hop around as much
-                if (reinforce.length > 0){
-                    var reinforceStructure = reinforce.sort(function(a,b) { return (a.hits/a.hitsMax) - (b.hits/b.hitsMax);})[0];
-                    creep.moveTo(reinforceStructure);
-                    creep.repair(reinforceStructure);
+                if (reinforce){
+                    // @TODO : find a better way, need some jitter in here
+                    // Bucket by 1000 so that workers won't churn between ramparts
+                    //var reinforceStructure = reinforce.sort(function(a,b) { return Math.floor( (a.hits - b.hits) / 1000 );})[1];
+
+                    console.log(reinforce);
+                    creep.moveTo(reinforce);
+                    creep.repair(reinforce);
                 }
             }
         }

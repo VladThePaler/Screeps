@@ -32,9 +32,7 @@ module.exports = function (creep) {
         } else if (hostileRange < optimalRange) {
             console.log("Moving away. Ranged distance to creep: "+hostileRange);
 
-            var hostileDirection = creep.pos.getDirectionTo(hostileCreep);
-            console.log(hostileDirection + ","+ oppositeDirections[hostileDirection]);
-            creep.move(oppositeDirections[hostileDirection]); // @TODO : Fix, gets stuck on walls
+            creep.keepAwayFromEnemies(optimalRange);
         }
 
         // Always attack

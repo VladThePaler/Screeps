@@ -10,9 +10,9 @@ module.exports = function (creep) {
             creep.moveTo(droppedEnergy[0]);
             creep.pickup(droppedEnergy[0]);
         } else {
-            var sources = creep.room.find(FIND_SOURCES);
-            creep.moveTo(sources[0]);
-            creep.harvest(sources[0]);
+            var source = getSource(creep);
+            creep.moveTo(source);
+            creep.harvest(source);
         }
     }
     else {
@@ -37,3 +37,23 @@ module.exports = function (creep) {
         }
     }
 };
+
+function getSource(creep)
+{
+    var sources = creep.room.find(FIND_SOURCES);
+    var harvesters = creep.room.find(FIND_MY_CREEPS, {
+        filter: function(c) {
+            return c.memory.role == 'harvester';
+        }
+    });
+
+    // hoping that the list is always sorted the same way here..
+    // Assign each harvester to one source
+
+    for (var i in harvesters) {
+        if (harvesters[i] == creep) {
+            var sourceNum = i % sources.length;
+            return sources[sourceNum];
+        }
+    }
+}
