@@ -35,7 +35,7 @@ module.exports = function (creep) {
             creep.build(site);
         } else {
 
-            if (creep.memory.shouldUpgradeController) {
+            if (creep.memory.roleId%3 == 0) {
                 // If there are no constructions, upgrade the controller
                 var controller = creep.room.find(FIND_STRUCTURES, {
                     filter: {structureType: STRUCTURE_CONTROLLER}
@@ -45,18 +45,18 @@ module.exports = function (creep) {
                 creep.upgradeController(controller[0]);
             } else {
                 // If there is nothing left to do, and the creep isn't designated to upgrade, build up walls
-                var reinforce = Game.spawns.Spawn1.pos.findClosest(FIND_MY_STRUCTURES, {
-                    filter: function(i) {
-                        return (i.hits < i.hitsMax) && (i.structureType == STRUCTURE_RAMPART || i.structureType == STRUCTURE_WALL);
+                var reinforce = Game.spawns.Spawn1.pos.findClosest(FIND_STRUCTURES, {
+                    filter: function(s) {
+                        if (s.pos.x == 0 || s.pos.x == 49 || s.pos.y == 0 || s.pos.y == 49) return false; // Ignore starter walls
+                        if (creep.memory.roleId%2 == s.pos.x%2) return false; // Add jitter based on roleId
+                        return ( s.structureType == STRUCTURE_RAMPART && (s.hits < s.hitsMax-25000) ) || ( s.structureType == STRUCTURE_WALL && s.hits < 500000);
                     }
                 });
 
                 if (reinforce){
-                    // @TODO : find a better way, need some jitter in here
-                    // Bucket by 1000 so that workers won't churn between ramparts
-                    //var reinforceStructure = reinforce.sort(function(a,b) { return Math.floor( (a.hits - b.hits) / 1000 );})[1];
+                    // @TODO : Bucket by 1000 so that workers won't churn between ramparts
 
-                    console.log(reinforce);
+                    //console.log(creep.name + " reinforcing " + reinforce);
                     creep.moveTo(reinforce);
                     creep.repair(reinforce);
                 }

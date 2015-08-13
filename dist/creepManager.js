@@ -14,8 +14,37 @@ module.exports = {
             }
         }
     },
+// @TODO : Spawn queue, combat mode in ensureCreeps
 
     ensureCreeps: function() {
+
+        var spawn = Game.spawns.Spawn1;
+
+        var requiredCreeps = {
+            harvester: {
+                parts: [WORK, CARRY, MOVE],
+                num: 5
+            },
+            builder: {
+                parts: [WORK, CARRY, MOVE],
+                num: 7
+            }
+        };
+
+        var creepsByRole = this.countCreepsByRole();
+
+        for (var r in requiredCreeps) {
+            // If the number of active creeps + queued creeps is less than required, add one
+            if ( (creepsByRole[r] + spawn.getNumQueuedCreepsForRole(r)) < requiredCreeps[r].num ) {
+                spawn.addToQueue(requiredCreeps[r].parts, r, {});
+                console.log("QUEUE " + r + " because " + (creepsByRole[r] + spawn.getNumQueuedCreepsForRole(r)) + " < " + requiredCreeps[r].num);
+            }
+
+        }
+
+        spawn.spawnNext();
+
+        /*
         if (!Game.creeps['Harvester1'])
             Game.spawns.Spawn1.createCreep( [WORK, CARRY, MOVE], 'Harvester1', {role:'harvester', tags:['worker']} );
 
@@ -46,6 +75,9 @@ module.exports = {
         else if (!Game.creeps['BuilderC3'])
             Game.spawns.Spawn1.createCreep( [WORK, CARRY, MOVE], 'BuilderC3', {role:'builder', tags:['worker'], shouldUpgradeController:true} );
 
+        else if (!Game.creeps['BuilderC4'])
+            Game.spawns.Spawn1.createCreep( [WORK, CARRY, MOVE], 'BuilderC4', {role:'builder', tags:['worker'], shouldUpgradeController:true} );
+
         //else if (!Game.creeps['MeleeSpawnPatrol1'])
         //Game.spawns.Spawn1.createCreep( [ATTACK, TOUGH, MOVE], 'MeleeSpawnPatrol1', {role:'meleeSpawnPatrol', tags:['combat']} );
 
@@ -60,6 +92,19 @@ module.exports = {
         //    console.log("Maxed resources, spawning more melee defenders");
         //    Game.spawns.Spawn1.createCreep( [ATTACK, ATTACK, TOUGH, TOUGH, MOVE], 'MeleeSpawnPatrol'+Game.creeps.length+1, {role: 'meleeSpawnPatrol', tags:['combat']} );
         //}
+
+        */
+    },
+
+    countCreepsByRole: function()
+    {
+        var creepsByRole = {};
+        for (var i in Game.creeps) {
+            var role = Game.creeps[i].memory.role;
+            if (creepsByRole[role] == undefined) creepsByRole[role] = 1;
+            else creepsByRole[role]++;
+        }
+        return creepsByRole;
     },
 
     massSuicide: function()

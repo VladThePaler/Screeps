@@ -3,17 +3,10 @@
 module.exports = function (creep) {
 
     if(creep.carry.energy < creep.carryCapacity) {
-        // If there is dropped energy and empty space, grab it
-        var droppedEnergy = creep.pos.findInRange(FIND_DROPPED_ENERGY, 5);
-        if (droppedEnergy.length && Game.spawns.Spawn1.energy < Game.spawns.Spawn1.energyCapacity) {
-            console.log("Grab the dropped energy");
-            creep.moveTo(droppedEnergy[0]);
-            creep.pickup(droppedEnergy[0]);
-        } else {
-            var source = getSource(creep);
-            creep.moveTo(source);
-            creep.harvest(source);
-        }
+        var source = getSource(creep);
+        //console.log(creep.name + " harvesting " + source);
+        creep.moveTo(source);
+        creep.harvest(source);
     }
     else {
         // Look for extensions that need filling
@@ -41,19 +34,6 @@ module.exports = function (creep) {
 function getSource(creep)
 {
     var sources = creep.room.find(FIND_SOURCES);
-    var harvesters = creep.room.find(FIND_MY_CREEPS, {
-        filter: function(c) {
-            return c.memory.role == 'harvester';
-        }
-    });
 
-    // hoping that the list is always sorted the same way here..
-    // Assign each harvester to one source
-
-    for (var i in harvesters) {
-        if (harvesters[i] == creep) {
-            var sourceNum = i % sources.length;
-            return sources[sourceNum];
-        }
-    }
+    return sources[(creep.memory.roleId % sources.length)];
 }
