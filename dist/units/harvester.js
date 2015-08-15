@@ -1,14 +1,17 @@
-// Game.spawns.Spawn1.createCreep( [WORK, CARRY, MOVE], 'Harvester1', {'role':'harvester', 'tags':['worker']} );
 
 module.exports = function (creep) {
 
-    if(creep.carry.energy < creep.carryCapacity) {
+    if (creep.memory.state == undefined) creep.memory.state = 'mining';
+
+    if(creep.memory.state == 'mining') {
         var source = getSource(creep);
         //console.log(creep.name + " harvesting " + source);
         creep.moveTo(source);
         creep.harvest(source);
+        if (creep.carry.energy >= creep.carryCapacity) creep.memory.state = 'returning';
     }
-    else {
+
+    if (creep.memory.state == 'returning') {
         // Look for extensions that need filling
         var nonEmptyExtensions = creep.room.find(FIND_MY_STRUCTURES, {
             filter: function(i) {
@@ -28,7 +31,9 @@ module.exports = function (creep) {
                 creep.dropEnergy();
             }
         }
+        if (creep.carry.energy <= 0) creep.memory.state = 'mining';
     }
+
 };
 
 function getSource(creep)

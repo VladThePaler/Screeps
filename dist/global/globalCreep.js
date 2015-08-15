@@ -10,4 +10,8 @@ module.exports = function () {
         if(target !== null && target.pos.inRangeTo(this.pos, minRange))
             this.moveTo(this.pos.x + this.pos.x - this.pos.x, this.pos.y + this.pos.y - this.pos.y );
     };
+
+    Creep.prototype.hasCarryCapacity = function() {
+        return this.carryCapacity > this.carry.energy;
+    }
 };
