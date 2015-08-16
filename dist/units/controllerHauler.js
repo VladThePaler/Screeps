@@ -1,0 +1,49 @@
+// Haul from a mine back to base
+module.exports = function (creep) {
+
+    if (creep.memory.state == undefined) creep.memory.state = 'collecting';
+
+    var controllerUpgraders = creep.room.find(FIND_MY_CREEPS, {
+        filter: function (c) {
+            return c.memory.role=='controllerUpgrader';
+        }
+    });
+
+    if (controllerUpgraders.length == 0) return;
+    var controllerUpgrader = controllerUpgraders[0];
+
+    var energyInRange = creep.pos.findInRange(FIND_DROPPED_ENERGY, 2);
+    var spawn = creep.getNearestSpawn();
+    if(creep.memory.state == 'collecting') {
+        //console.log("c hauler collecting");
+
+        // If there's nearby energy, gather it
+        if (creep.hasCarryCapacity() && energyInRange.length > 0 && creep.pos.getRangeTo(controllerUpgrader) > 3 || creep.pos.getRangeTo(spawn) <= 1) creep.memory.state = 'gathering';
+        else creep.moveTo(spawn);
+    }
+
+    if (creep.memory.state == 'gathering') {
+        //console.log("c hauler gathering");
+        spawn.transferEnergy(creep, (creep.energyCapacity-creep.carry.energy));
+        if (creep.pos.getRangeTo(energyInRange[0]) > 1)
+            creep.moveTo(energyInRange[0]);
+        var pickup = creep.pickup(energyInRange[0]);
+        if (pickup != OK) creep.memory.state = 'collecting';
+        if (!creep.hasCarryCapacity()) creep.memory.state = 'transferring';
+    }
+
+
+    if (creep.memory.state == 'transferring') {
+        //console.log("c hauler transferring");
+        creep.moveTo(controllerUpgrader);
+        creep.transferEnergy(controllerUpgrader, (controllerUpgrader.energyCapacity-controllerUpgrader.carry.energy));
+
+        if (creep.carry.energy < 75) {
+            creep.dropEnergy(creep.carry.energy);
+            creep.memory.state='collecting';
+        }
+
+        if (creep.carry.energy <= 0) creep.memory.state = 'collecting';
+    }
+
+};

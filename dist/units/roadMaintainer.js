@@ -9,10 +9,10 @@ module.exports = function (creep) {
 
     // If the creep is out of energy, go get more
     if(creep.carry.energy == 0) {
-        creep.moveTo(Game.spawns.Spawn1);
+        creep.moveTo(creep.getSpawn());
 
-        if (Game.spawns.Spawn1.energy > creep.carryCapacity) {
-            Game.spawns.Spawn1.transferEnergy(creep, creep.carryCapacity);
+        if (creep.getSpawn().energy > creep.carryCapacity) {
+            creep.getSpawn().transferEnergy(creep, creep.carryCapacity);
         }
     } else {
 
@@ -20,7 +20,7 @@ module.exports = function (creep) {
 
             var structuresNeedRepair = creep.room.find(FIND_STRUCTURES, {
                 filter: function(i) {
-                    return (i.hits / i.hitsMax) < 0.95 && i.structureType == STRUCTURE_ROAD;
+                    return (i.hits / i.hitsMax) < 0.99 && i.structureType == STRUCTURE_ROAD;
                 }
             }).sort(function (a, b) {
                 return (a.hits / a.hitsMax) - (b.hits / b.hitsMax);
@@ -40,7 +40,7 @@ module.exports = function (creep) {
 
             // Wipe the assigned site when complete
             if (site == null || site.hits >= site.hitsMax) {
-                console.log("wiping road site for creep " + creep.name + " because null site "+ site + " "+creep.memory.repairSite);
+                //console.log("wiping road site for creep " + creep.name + " because null site "+ site + " "+creep.memory.repairSite);
                 creep.memory.repairSite = undefined;
             }
             else {
@@ -50,6 +50,13 @@ module.exports = function (creep) {
             }
         } else console.log("Road maintainer is bored");
 
+        // Repair roads underfoot as we pass
+        var underfoot = creep.pos.findInRange(FIND_STRUCTURES, 0,{
+            filter: function(i) {
+                return (i.hits < i.hitsMax) && i.structureType == STRUCTURE_ROAD;
+            }
+        });
+        if (underfoot.length > 0) creep.repair(underfoot[0]);
     }
 };
 

@@ -23,10 +23,10 @@ module.exports = function (creep) {
             creep.moveTo(nonEmptyExtensions[0]);
             creep.transferEnergy(nonEmptyExtensions[0]);
         } else {
-            creep.moveTo(Game.spawns.Spawn1);
+            creep.moveTo(creep.getSpawn());
 
             // If there is no more space, drop the energy
-            if (creep.pos.getRangeTo(Game.spawns.Spawn1) == 1 && creep.transferEnergy(Game.spawns.Spawn1) == ERR_FULL) {
+            if (creep.pos.getRangeTo(creep.getSpawn()) == 1 && creep.transferEnergy(creep.getSpawn()) == ERR_FULL) {
                 console.log("No more space, drop the energy");
                 creep.dropEnergy();
             }

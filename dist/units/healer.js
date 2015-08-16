@@ -1,4 +1,3 @@
-// Game.spawns.Spawn1.createCreep( [HEAL, MOVE], 'Healer1', {'role':'healer'} );
 var retreatDistance = 3;
 
 module.exports = function (creep) {
@@ -6,7 +5,7 @@ module.exports = function (creep) {
 
     // If we're too close to an enemy, run home
     if (creep.pos.findInRange(FIND_HOSTILE_CREEPS, retreatDistance).length > 0) {
-        creep.moveTo(Game.spawns.Spawn1);
+        creep.moveTo(creep.getSpawn());
     } else {
         // Otherwise find a friendly wounded creep and move toward it
         for (var i in friendlyCreeps) {

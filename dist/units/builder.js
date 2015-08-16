@@ -2,17 +2,26 @@
 module.exports = function (creep) {
 
     // If there's energy underfoot, grab it
-    var energyUnderfoot = creep.pos.findInRange(FIND_DROPPED_ENERGY, 0);
+    var energyUnderfoot = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
     if (creep.carry.energy < creep.carryCapacity && energyUnderfoot.length > 0) {
         creep.pickup(energyUnderfoot[0]);
     }
 
     // If the creep is out of energy, go get more
     if(creep.carry.energy == 0) {
-        creep.moveTo(Game.spawns.Spawn1);
+        var storage = creep.getNearestStorage();
+        // Source will be spawn in the early game, storage in the later game
+        var source = creep.getSpawn();
+        var sourceEnergy = source.energy;
+        if (storage != undefined) {
+            source = storage;
+            sourceEnergy = source.store.energy;
+        }
 
-        if (Game.spawns.Spawn1.energy > creep.carryCapacity) {
-            Game.spawns.Spawn1.transferEnergy(creep, creep.carryCapacity);
+        creep.moveTo(source);
+
+        if (sourceEnergy > creep.carryCapacity) {
+            source.transferEnergy(creep, creep.carryCapacity);
         }
     } else {
 
@@ -107,6 +116,7 @@ function buildStructures(creep)
 
 function upgradeController(creep)
 {
+    return false;
     if (creep.memory.roleId%3 == 0) {
         // If there are no constructions, upgrade the controller
         var controller = creep.room.find(FIND_STRUCTURES, {
@@ -122,13 +132,13 @@ function upgradeController(creep)
 
 function reinforceWalls(creep)
 {
-    var spawn = Game.spawns.Spawn1;
+    var spawn = creep.getSpawn();
     var assignedWall = spawn.getStructureAssignedToCreep('reinforce', creep);
 
     // If no wall assigned, assign a wall
     if (assignedWall == undefined) {
         // If there is nothing left to do, and the creep isn't designated to upgrade, build up walls
-        var reinforce = Game.spawns.Spawn1.pos.findClosest(FIND_STRUCTURES, {
+        var reinforce = spawn.pos.findClosest(FIND_STRUCTURES, {
             filter: function (s) {
                 if (s.pos.x == 0 || s.pos.x == 49 || s.pos.y == 0 || s.pos.y == 49) return false; // Ignore starter walls
                 if (spawn.structureIsAssigned('reinforce', s)) return false;

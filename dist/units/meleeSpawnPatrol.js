@@ -1,4 +1,3 @@
-// Game.spawns.Spawn1.createCreep( [ATTACK, TOUGH, MOVE], 'MeleeSpawnPatrol1', {'role':'meleeSpawnPatrol', 'tags':['combat']} );
 
 var maxApproachRange = 7;
 
@@ -11,7 +10,7 @@ module.exports = function (creep) {
     }
     else {
         // @TODO : Genericize this behaviour?
-        var rallyPoint = (creep.room.find(FIND_FLAGS).length > 0) ? creep.pos.findClosest(FIND_FLAGS) : Game.spawns.Spawn1;
+        var rallyPoint = (creep.room.find(FIND_FLAGS).length > 0) ? creep.pos.findClosest(FIND_FLAGS) : creep.getSpawn();
         creep.moveTo(rallyPoint);
     }
 };

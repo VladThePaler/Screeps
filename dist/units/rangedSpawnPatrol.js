@@ -1,4 +1,3 @@
-// Game.spawns.Spawn1.createCreep( [RANGED_ATTACK, TOUGH, MOVE, MOVE], 'RangedSpawnPatrol1', {'role':'rangedSpawnPatrol', 'tags':['combat']} );
 var maxApproachRange = 10;
 var optimalRange = 3;
 var retreatThreshold = .25;
@@ -39,7 +38,7 @@ module.exports = function (creep) {
         creep.rangedAttack(hostileCreep);
     }
     else {
-        var rallyPoint = (creep.room.find(FIND_FLAGS).length > 0) ? creep.pos.findClosest(FIND_FLAGS) : Game.spawns.Spawn1;
+        var rallyPoint = (creep.room.find(FIND_FLAGS).length > 0) ? creep.pos.findClosest(FIND_FLAGS) : creep.getSpawn();
         creep.moveTo(rallyPoint);
     }
 };
