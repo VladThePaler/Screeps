@@ -1,14 +1,29 @@
 // Haul from a mine back to base
+var homeRoom = 'E6N8';
+var directions = [FIND_EXIT_LEFT, FIND_EXIT_RIGHT, FIND_EXIT_BOTTOM];
+var haulersPerMiner = 2;
 
 module.exports = function (creep) {
+    var sources = creep.room.find(FIND_SOURCES);
 
     if (creep.memory.state == undefined) creep.memory.state = 'headingToMine';
 
-    var energyInRange = creep.pos.findInRange(FIND_DROPPED_ENERGY, 2);
+    var energyInRange = creep.pos.findInRange(FIND_DROPPED_ENERGY, 3);
+
+    if(creep.memory.state == 'findNewRoom') {
+        // Pick a direction
+        var direction = directions[(Math.ceil(creep.memory.roleId/haulersPerMiner)-sources.length-1)];
+        var exit = creep.pos.findClosest(direction);
+        if (exit == undefined) console.log(creep.name + " can't find exit " + direction);
+        else creep.moveTo(exit);
+        if (creep.room.name != homeRoom) creep.memory.state = 'headingToMine';
+    }
 
     // head to the mine, keep an eye out for nearby energy
     if(creep.memory.state == 'headingToMine') {
-        var source = getSource(creep);
+        if (creep.memory.roleId > sources.length*haulersPerMiner && creep.room.name == homeRoom) creep.memory.state = 'findNewRoom';
+
+        var source = sources[(creep.memory.roleId % sources.length)];
         // If there's nearby energy, gather it
         if (creep.hasCarryCapacity() && energyInRange.length > 0 && creep.pos.getRangeTo(creep.getSpawn()) > 3) creep.memory.state = 'gathering';
         else if (creep.pos.getRangeTo(source) <= 2) creep.memory.state = 'gathering';
@@ -27,6 +42,11 @@ module.exports = function (creep) {
 
     // Return from the mine when full, drop off at extensions, spawns, or drop on the ground
     if (creep.memory.state == 'returning') {
+        if (creep.room.name != homeRoom) {
+            console.log(creep.name + " returning to home room");
+            var exit = creep.room.findExitTo(homeRoom);
+            creep.moveTo(exit);
+        }
 
         // If there are nearby workers on the path, give energy away
         var closestWorkers = creep.pos.findInRange(FIND_MY_CREEPS, 2, {
@@ -87,12 +107,4 @@ function distributeToExtensionsAndSpawn(creep)
         }
     }
 
-}
-
-
-function getSource(creep)
-{
-    var sources = creep.room.find(FIND_SOURCES);
-
-    return sources[(creep.memory.roleId % sources.length)];
 }

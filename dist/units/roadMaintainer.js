@@ -9,10 +9,19 @@ module.exports = function (creep) {
 
     // If the creep is out of energy, go get more
     if(creep.carry.energy == 0) {
-        creep.moveTo(creep.getSpawn());
+        var storage = creep.getNearestStorage();
+        // Source will be spawn in the early game, storage in the later game
+        var source = creep.getSpawn();
+        var sourceEnergy = source.energy;
+        if (storage != undefined) {
+            source = storage;
+            sourceEnergy = source.store.energy;
+        }
 
-        if (creep.getSpawn().energy > creep.carryCapacity) {
-            creep.getSpawn().transferEnergy(creep, creep.carryCapacity);
+        creep.moveTo(source);
+
+        if (sourceEnergy > creep.carryCapacity) {
+            source.transferEnergy(creep, creep.carryCapacity);
         }
     } else {
 

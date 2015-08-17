@@ -9,6 +9,7 @@ module.exports = function (creep) {
 
     // If the creep is out of energy, go get more
     if(creep.carry.energy == 0) {
+         // @TODO : move this to prototype
         var storage = creep.getNearestStorage();
         // Source will be spawn in the early game, storage in the later game
         var source = creep.getSpawn();
@@ -142,7 +143,8 @@ function reinforceWalls(creep)
             filter: function (s) {
                 if (s.pos.x == 0 || s.pos.x == 49 || s.pos.y == 0 || s.pos.y == 49) return false; // Ignore starter walls
                 if (spawn.structureIsAssigned('reinforce', s)) return false;
-                return ( s.structureType == STRUCTURE_RAMPART && (s.hits < s.hitsMax - 25000) ) || ( s.structureType == STRUCTURE_WALL && s.hits < 975000);
+                return ( s.structureType == STRUCTURE_RAMPART && (s.hits < 1200000) ) || ( s.structureType == STRUCTURE_WALL && s.hits < 975000);
+                //return ( s.structureType == STRUCTURE_RAMPART && (s.hits < s.hitsMax - 25000) ) || ( s.structureType == STRUCTURE_WALL && s.hits < 975000);
             }
         });
         spawn.assignStructure('reinforce', reinforce, creep);
@@ -152,7 +154,8 @@ function reinforceWalls(creep)
 
     if (assignedWall != undefined) {
         //console.log(creep.name + " reinforcing " + assignedWall);
-        creep.moveTo(assignedWall);
+        if (creep.pos.getRangeTo(assignedWall) > 2);
+            creep.moveTo(assignedWall);
         creep.repair(assignedWall);
 
         // If the structure is built up, deassign the builder

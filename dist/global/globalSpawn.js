@@ -47,10 +47,13 @@ module.exports = function () {
 
     };
 
-    Spawn.prototype.addToQueue = function(parts, role, memory) {
+    Spawn.prototype.addToQueue = function(parts, role, memory, startOfQueue) {
         this.initQueue();
 
-        this.memory.creepQueue.push([parts, role, memory]);
+        if (startOfQueue == true)
+            this.memory.creepQueue.unshift([parts, role, memory]);
+        else
+            this.memory.creepQueue.push([parts, role, memory]);
     };
 
     Spawn.prototype.getNumQueuedCreepsForRole = function(role) {

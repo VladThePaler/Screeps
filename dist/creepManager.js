@@ -17,19 +17,19 @@ module.exports = {
 // @TODO : Spawn queue, combat mode in ensureCreeps
 
     ensureCreeps: function() {
-
         var spawn = Game.spawns.Spawn1;
 
         // @TODO : lower energy roles for early game
+        // @TODO : Add priority
         var requiredCreeps = {
             miner: {
                 parts: [WORK, WORK, WORK, WORK, WORK, MOVE],
-                num: 2,
+                num: 3,
                 controllerLevelMoreThan: 2
             },
             hauler: {
                 parts: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
-                num: 4,
+                num: 6,
                 controllerLevelMoreThan: 2
             },
             harvester: {
@@ -39,7 +39,7 @@ module.exports = {
             },
             builder: {
                 parts: [WORK, WORK, CARRY, CARRY, MOVE, MOVE],
-                num: 9
+                num: 8
             },
             roadMaintainer: {
                 parts: [WORK, CARRY, CARRY, MOVE],
@@ -51,7 +51,7 @@ module.exports = {
                 num: 1
             },
             controllerHauler: {
-                parts: [CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
+                parts: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
                 num: 2
             },
             rampartDefender: {
@@ -59,11 +59,11 @@ module.exports = {
                 num: 1,
                 hostilesPresent: true
             },
-            //extensionFiller: {
-            //    parts: [WORK, CARRY, CARRY, MOVE],
-            //    num: 1,
-            //    controllerLevelMoreThan: 3
-            //}
+            extensionFiller: {
+                parts: [CARRY, CARRY, MOVE],
+                num: 1,
+                controllerLevelMoreThan: 3
+            }
 
         };
 
@@ -102,6 +102,14 @@ module.exports = {
             }
 
         }
+
+        var harvesters = (creepsByRole['harvester'] == undefined) ? 0 : creepsByRole['harvester'];
+        // As a backup, spawn a harvester to keep things moving
+        if (creepsByRole['miner'] == undefined && (harvesters + spawn.getNumQueuedCreepsForRole('harvester')) < 2) {
+            console.log("Spawning backup harvester");
+            spawn.addToQueue([WORK, CARRY, MOVE], 'harvester', {}, true);
+        }
+
 
         spawn.spawnNext();
 

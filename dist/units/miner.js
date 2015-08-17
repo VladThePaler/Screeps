@@ -1,17 +1,25 @@
-// Mine a source, drop all energy aon the ground for haulers to pick up
+// Mine a source, drop all energy on the ground for haulers to pick up
+var homeRoom = 'E6N8';
+
+var directions = [FIND_EXIT_LEFT, FIND_EXIT_RIGHT, FIND_EXIT_BOTTOM];
 
 module.exports = function (creep) {
 
-    var source = getSource(creep);
-    creep.moveTo(source);
-    creep.harvest(source);
-    if (creep.carry.energy >= creep.carryCapacity)
-        creep.dropEnergy(creep.carryCapacity);
-};
-
-function getSource(creep)
-{
     var sources = creep.room.find(FIND_SOURCES);
 
-    return sources[(creep.memory.roleId % sources.length)];
-}
+    // If there are more miners than sources, find another room
+    if (creep.memory.roleId > sources.length && creep.room.name == homeRoom) {
+        // Pick a direction
+        var direction = directions[(creep.memory.roleId-sources.length-1)];
+        var exit = creep.pos.findClosest(direction);
+        if (exit == undefined) console.log(creep.name + " can't find exit " + direction);
+        else creep.moveTo(exit);
+    } else {
+
+        var source = sources[(creep.memory.roleId % sources.length)];
+        creep.moveTo(source);
+        creep.harvest(source);
+        if (creep.carry.energy >= creep.carryCapacity)
+            creep.dropEnergy(creep.carryCapacity);
+    }
+};
