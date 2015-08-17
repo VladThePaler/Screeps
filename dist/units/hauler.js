@@ -43,7 +43,7 @@ module.exports = function (creep) {
     // Return from the mine when full, drop off at extensions, spawns, or drop on the ground
     if (creep.memory.state == 'returning') {
         if (creep.room.name != homeRoom) {
-            console.log(creep.name + " returning to home room");
+            //console.log(creep.name + " returning to home room");
             var exit = creep.room.findExitTo(homeRoom);
             creep.moveTo(exit);
         }

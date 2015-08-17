@@ -13,18 +13,22 @@ module.exports = function (creep) {
     var controllerUpgrader = controllerUpgraders[0];
 
     var energyInRange = creep.pos.findInRange(FIND_DROPPED_ENERGY, 2);
-    var spawn = creep.getNearestSpawn();
+    var storage = creep.getNearestStorage();
+    // Source will be spawn in the early game, storage in the later game
+    var source = (storage == undefined) ? creep.getSpawn() : storage;
+
     if(creep.memory.state == 'collecting') {
         //console.log("c hauler collecting");
 
         // If there's nearby energy, gather it
-        if (creep.hasCarryCapacity() && energyInRange.length > 0 && creep.pos.getRangeTo(controllerUpgrader) > 3 || creep.pos.getRangeTo(spawn) <= 1) creep.memory.state = 'gathering';
-        else creep.moveTo(spawn);
+        if (creep.hasCarryCapacity() && energyInRange.length > 0 && creep.pos.getRangeTo(controllerUpgrader) > 3 || creep.pos.getRangeTo(source) <= 1) creep.memory.state = 'gathering';
+        else creep.moveTo(source);
     }
 
     if (creep.memory.state == 'gathering') {
+
         //console.log("c hauler gathering");
-        spawn.transferEnergy(creep, (creep.energyCapacity-creep.carry.energy));
+        source.transferEnergy(creep, (creep.energyCapacity-creep.carry.energy));
         if (creep.pos.getRangeTo(energyInRange[0]) > 1)
             creep.moveTo(energyInRange[0]);
         var pickup = creep.pickup(energyInRange[0]);
