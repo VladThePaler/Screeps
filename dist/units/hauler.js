@@ -1,6 +1,6 @@
 // Haul from a mine back to base
 var homeRoom = 'E6N8';
-var directions = [FIND_EXIT_LEFT, FIND_EXIT_RIGHT, FIND_EXIT_BOTTOM];
+var directions = [FIND_EXIT_LEFT, FIND_EXIT_BOTTOM, FIND_EXIT_RIGHT];
 var haulersPerMiner = 2;
 
 module.exports = function (creep) {
@@ -14,8 +14,8 @@ module.exports = function (creep) {
         // Pick a direction
         var direction = directions[(Math.ceil(creep.memory.roleId/haulersPerMiner)-sources.length-1)];
         var exit = creep.pos.findClosest(direction);
-        if (exit == undefined) console.log(creep.name + " can't find exit " + direction);
-        else creep.moveTo(exit);
+        if (!creep.spawning && exit == undefined) console.log(creep.name + " can't find exit " + direction);
+        else creep.moveMeTo(exit);
         if (creep.room.name != homeRoom) creep.memory.state = 'headingToMine';
     }
 
@@ -27,14 +27,14 @@ module.exports = function (creep) {
         // If there's nearby energy, gather it
         if (creep.hasCarryCapacity() && energyInRange.length > 0 && creep.pos.getRangeTo(creep.getSpawn()) > 3) creep.memory.state = 'gathering';
         else if (creep.pos.getRangeTo(source) <= 2) creep.memory.state = 'gathering';
-        else creep.moveTo(source);
+        else creep.moveMeTo(source);
     }
 
     // Stand next to the miner and pick up dropped energy
     if (creep.memory.state == 'gathering') {
         // Stand next to the energy, not on it, to not block a miner
         if (creep.pos.getRangeTo(energyInRange[0]) > 1)
-            creep.moveTo(energyInRange[0]);
+            creep.moveMeTo(energyInRange[0]);
         var pickup = creep.pickup(energyInRange[0]);
         if (pickup != OK) creep.memory.state = 'headingToMine';
         if (!creep.hasCarryCapacity()) creep.memory.state = 'returning';
@@ -45,7 +45,7 @@ module.exports = function (creep) {
         if (creep.room.name != homeRoom) {
             //console.log(creep.name + " returning to home room");
             var exit = creep.room.findExitTo(homeRoom);
-            creep.moveTo(exit);
+            creep.moveMeTo(exit);
         }
 
         // If there are nearby workers on the path, give energy away
@@ -78,7 +78,7 @@ module.exports = function (creep) {
 
 function distributeToStorage(creep, storage)
 {
-    creep.moveTo(storage);
+    creep.moveMeTo(storage);
 
     // If there is no more space, drop the energy
     if (creep.transferEnergy(storage) == ERR_FULL) {
@@ -96,10 +96,10 @@ function distributeToExtensionsAndSpawn(creep)
     });
 
     if (nonEmptyExtension != undefined) {
-        creep.moveTo(nonEmptyExtension);
+        creep.moveMeTo(nonEmptyExtension);
         creep.transferEnergy(nonEmptyExtension);
     } else {
-        creep.moveTo(creep.getSpawn());
+        creep.moveMeTo(creep.getSpawn());
 
         // If there is no more space, drop the energy
         if (creep.pos.getRangeTo(creep.getSpawn()) == 1 && creep.transferEnergy(creep.getSpawn()) == ERR_FULL) {

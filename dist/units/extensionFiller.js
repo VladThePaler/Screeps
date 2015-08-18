@@ -8,7 +8,8 @@ module.exports = function (creep) {
     if (creep.memory.state == 'collecting') {
         //console.log(creep.name + " collecting");
         var spawn = creep.getSpawn();
-        creep.moveTo(spawn);
+
+        creep.moveMeTo(spawn);
         var transferEnergy = creep.carryCapacity-creep.carry.energy;
         if (spawn.energy < transferEnergy) transferEnergy = spawn.energy;
         spawn.transferEnergy(creep, transferEnergy);
@@ -21,7 +22,7 @@ module.exports = function (creep) {
     if (creep.memory.state == 'collectingFromStorage') {
         //console.log(creep.name + " collecting from storage");
         var storage = creep.getNearestStorage();
-        creep.moveTo(storage);
+        creep.moveMeTo(storage);
         storage.transferEnergy(creep, creep.carryCapacity-creep.carry.energy);
 
         if (creep.carry.energy >= creep.carryCapacity) creep.memory.state = 'filling';
@@ -38,10 +39,10 @@ module.exports = function (creep) {
         });
 
         if (nonFullExtension  != undefined) {
-            creep.moveTo(nonFullExtension);
+            creep.moveMeTo(nonFullExtension);
             creep.transferEnergy(nonFullExtension);
         } else {
-            creep.moveTo(creep.getSpawn());
+            creep.moveMeTo(creep.getSpawn());
         }
         if (creep.carry.energy == 0) creep.memory.state = 'collecting';
     }

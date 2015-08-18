@@ -1,3 +1,6 @@
+// @TODO : Change this, doesn't scale
+var rampartHits = 2000000;
+var wallHits = 2000000;
 
 module.exports = function (creep) {
 
@@ -134,7 +137,7 @@ function upgradeController(creep)
 function reinforceWalls(creep)
 {
     var spawn = creep.getSpawn();
-    var assignedWall = spawn.getStructureAssignedToCreep('reinforce', creep);
+    var assignedWall = creep.getStructureAssignedToCreep('reinforce');
 
     // If no wall assigned, assign a wall
     if (assignedWall == undefined) {
@@ -142,19 +145,18 @@ function reinforceWalls(creep)
         var reinforce = spawn.pos.findClosest(FIND_STRUCTURES, {
             filter: function (s) {
                 if (s.pos.x == 0 || s.pos.x == 49 || s.pos.y == 0 || s.pos.y == 49) return false; // Ignore starter walls
-                if (spawn.structureIsAssigned('reinforce', s)) return false;
-                return ( s.structureType == STRUCTURE_RAMPART && (s.hits < 1200000) ) || ( s.structureType == STRUCTURE_WALL && s.hits < 975000);
+                return ( (s.structureType == STRUCTURE_RAMPART && (s.hits < rampartHits) ) || ( s.structureType == STRUCTURE_WALL && s.hits < wallHits) && !s.structureIsAssigned('reinforce'));
                 //return ( s.structureType == STRUCTURE_RAMPART && (s.hits < s.hitsMax - 25000) ) || ( s.structureType == STRUCTURE_WALL && s.hits < 975000);
             }
         });
-        spawn.assignStructure('reinforce', reinforce, creep);
+        creep.assignStructure('reinforce', reinforce);
         assignedWall = reinforce;
         console.log("assigned " + creep.name + " to reinforce " + reinforce);
     }
 
     if (assignedWall != undefined) {
         //console.log(creep.name + " reinforcing " + assignedWall);
-        if (creep.pos.getRangeTo(assignedWall) > 2);
+            if (creep.pos.getRangeTo(assignedWall) > 1)
             creep.moveTo(assignedWall);
         creep.repair(assignedWall);
 
@@ -163,9 +165,9 @@ function reinforceWalls(creep)
         (
             (assignedWall.structureType == STRUCTURE_RAMPART && assignedWall.hits >= assignedWall.hitsMax)
             ||
-            (assignedWall.structureType == STRUCTURE_WALL && assignedWall.hits >= 1000000)
+            (assignedWall.structureType == STRUCTURE_WALL && assignedWall.hits >= wallHits)
         ) {
-            spawn.unassignStructure('reinforce', assignedWall);
+            assignedWall.unassignStructure('reinforce');
             console.log("unassigned reinforce " + reinforce);
         }
 

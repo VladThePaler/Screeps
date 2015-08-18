@@ -9,7 +9,7 @@ module.exports = function (creep) {
 
     var controller = creep.getNearestController();
 
-    creep.moveTo(controller);
+    creep.moveMeTo(controller);
     creep.claimController(controller);
     creep.upgradeController(controller);
 };

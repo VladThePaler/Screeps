@@ -22,7 +22,7 @@ module.exports = function (creep) {
 
         // If there's nearby energy, gather it
         if (creep.hasCarryCapacity() && energyInRange.length > 0 && creep.pos.getRangeTo(controllerUpgrader) > 3 || creep.pos.getRangeTo(source) <= 1) creep.memory.state = 'gathering';
-        else creep.moveTo(source);
+        else creep.moveMeTo(source);
     }
 
     if (creep.memory.state == 'gathering') {
@@ -30,7 +30,7 @@ module.exports = function (creep) {
         //console.log("c hauler gathering");
         source.transferEnergy(creep, (creep.energyCapacity-creep.carry.energy));
         if (creep.pos.getRangeTo(energyInRange[0]) > 1)
-            creep.moveTo(energyInRange[0]);
+            creep.moveMeTo(energyInRange[0]);
         var pickup = creep.pickup(energyInRange[0]);
         if (pickup != OK) creep.memory.state = 'collecting';
         if (!creep.hasCarryCapacity()) creep.memory.state = 'transferring';
@@ -39,7 +39,7 @@ module.exports = function (creep) {
 
     if (creep.memory.state == 'transferring') {
         //console.log("c hauler transferring");
-        creep.moveTo(controllerUpgrader);
+        creep.moveMeTo(controllerUpgrader);
         creep.transferEnergy(controllerUpgrader, (controllerUpgrader.energyCapacity-controllerUpgrader.carry.energy));
 
         if (creep.carry.energy < 75) {

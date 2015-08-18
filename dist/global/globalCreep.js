@@ -1,4 +1,24 @@
+var global = require('global');
+
 module.exports = function () {
+
+    // Like moveTo, but will move a builder out of the way
+    Creep.prototype.moveMeTo = function(object) {
+
+        var ret = this.moveTo(object);
+        if (ret == ERR_NO_PATH) {
+            var builders = this.pos.findInRange(FIND_MY_CREEPS, 1, {
+                filter: function (c) { return ( c.memory.role=='builder' || c.memory.role=='rampartDefender'); }
+            });
+            if (builders.length > 0) {
+                var builder = Math.floor(Math.random()*builders.length)
+                //console.log(this.name + " moving builder " + builders[0]);
+                var builderPos = builders[builder].pos;
+                builders[builder].moveTo(this.pos.x, this.pos.y);
+                this.moveTo(builderPos.x, builderPos.y);
+            }
+        }
+    }
 
     Creep.prototype.keepAwayFromEnemies = function(minRange)
     {
@@ -30,4 +50,23 @@ module.exports = function () {
             filter: { structureType: STRUCTURE_STORAGE }
         })[0];
     };
+
+
+    Creep.prototype.assignStructure = function (structureClass, structure) {
+        global.initStructureAssignments(structureClass);
+        Memory.assignedStructures[structureClass][structure.id] = this.memory.roleId;
+        //console.log("assigned "+this.memory.roleId + " to " +structure.id);
+    };
+
+    Creep.prototype.getStructureAssignedToCreep = function (structureClass) {
+        global.initStructureAssignments(structureClass);
+        for (var i in Memory.assignedStructures[structureClass]) {
+            if (Memory.assignedStructures[structureClass][i] == this.memory.roleId) return Game.getObjectById(i);
+        }
+        return undefined;
+    };
+
+
+
+
 };

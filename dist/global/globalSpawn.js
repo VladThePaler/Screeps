@@ -5,43 +5,6 @@ module.exports = function () {
     };
 
 
-
-    Spawn.prototype.assignStructure = function (structureClass, structure, creep) {
-        this.initStructureAssignments(structureClass);
-        this.memory.assignedStructures[structureClass][structure.id] = creep.memory.roleId;
-        console.log(this.memory.assignedStructures[structureClass]);
-    };
-
-    Spawn.prototype.getStructureAssignedToCreep = function (structureClass, creep) {
-        this.initStructureAssignments(structureClass);
-        for (var i in this.memory.assignedStructures[structureClass]) {
-            if (this.memory.assignedStructures[structureClass][i] == creep.memory.roleId) return Game.getObjectById(i);
-        }
-        return undefined;
-    };
-
-    Spawn.prototype.structureIsAssigned = function (structureClass, structure) {
-        this.initStructureAssignments(structureClass);
-        return this.memory.assignedStructures[structureClass][structure.id] != undefined;
-    };
-
-    Spawn.prototype.unassignStructure = function (structureClass, structure) {
-        this.initStructureAssignments(structureClass);
-        return this.memory.assignedStructures[structureClass][structure.id] = undefined;
-    };
-
-    Spawn.prototype.getCreepAssignedToStructure = function (structureClass, structure) {
-        this.initStructureAssignments(structureClass);
-        return this.memory.assignedStructures[structureClass][structure.id];
-    };
-
-    Spawn.prototype.initStructureAssignments = function (structureClass) {
-        if (this.memory.assignedStructures == undefined) this.memory.assignedStructures = {};
-        if (this.memory.assignedStructures[structureClass] == undefined) this.memory.assignedStructures[structureClass] = {};
-    };
-
-
-
     Spawn.prototype.initQueue = function() {
         if (this.memory.creepQueue == undefined) this.memory.creepQueue = [];
 

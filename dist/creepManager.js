@@ -24,13 +24,18 @@ module.exports = {
         var requiredCreeps = {
             miner: {
                 parts: [WORK, WORK, WORK, WORK, WORK, MOVE],
-                num: 3,
+                num: 4,
                 controllerLevelMoreThan: 2
             },
             hauler: {
                 parts: [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
-                num: 6,
+                num: 8,
                 controllerLevelMoreThan: 2
+            },
+            extensionFiller: {
+                parts: [CARRY, CARRY, MOVE, MOVE],
+                num: 2,
+                controllerLevelMoreThan: 3
             },
             harvester: {
                 parts: [WORK, WORK, CARRY, CARRY, MOVE, MOVE],
@@ -39,7 +44,7 @@ module.exports = {
             },
             builder: {
                 parts: [WORK, WORK, CARRY, CARRY, MOVE, MOVE],
-                num: 8
+                num: 5
             },
             roadMaintainer: {
                 parts: [WORK, CARRY, CARRY, MOVE],
@@ -47,7 +52,7 @@ module.exports = {
                 controllerLevelMoreThan: 2
             },
             controllerUpgrader: {
-                parts: [WORK, WORK, WORK, WORK, CARRY, MOVE],
+                parts: [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE],
                 num: 1
             },
             controllerHauler: {
@@ -56,13 +61,8 @@ module.exports = {
             },
             rampartDefender: {
                 parts: [RANGED_ATTACK, MOVE],
-                num: 1,
+                num: 3,
                 hostilesPresent: true
-            },
-            extensionFiller: {
-                parts: [CARRY, CARRY, MOVE],
-                num: 1,
-                controllerLevelMoreThan: 3
             }
 
         };

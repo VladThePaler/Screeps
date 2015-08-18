@@ -1,7 +1,7 @@
 // Mine a source, drop all energy on the ground for haulers to pick up
 var homeRoom = 'E6N8';
 
-var directions = [FIND_EXIT_LEFT, FIND_EXIT_RIGHT, FIND_EXIT_BOTTOM];
+var directions = [FIND_EXIT_LEFT, FIND_EXIT_BOTTOM, FIND_EXIT_RIGHT];
 
 module.exports = function (creep) {
 
@@ -12,12 +12,12 @@ module.exports = function (creep) {
         // Pick a direction
         var direction = directions[(creep.memory.roleId-sources.length-1)];
         var exit = creep.pos.findClosest(direction);
-        if (exit == undefined) console.log(creep.name + " can't find exit " + direction);
-        else creep.moveTo(exit);
+        if (!creep.spawning && exit == undefined) console.log(creep.name + " can't find exit " + direction);
+        else creep.moveMeTo(exit);
     } else {
 
         var source = sources[(creep.memory.roleId % sources.length)];
-        creep.moveTo(source);
+        creep.moveMeTo(source);
         creep.harvest(source);
         if (creep.carry.energy >= creep.carryCapacity)
             creep.dropEnergy(creep.carryCapacity);
