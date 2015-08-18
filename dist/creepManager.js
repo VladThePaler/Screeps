@@ -7,10 +7,10 @@ module.exports = {
         } else {
 
             try {
-                var unit = require(role);
-                unit(creep);
+                var role = require(role);
+                role.run(creep);
             } catch (err) {
-                console.log("Could not require creep role '" + role + "': " + err.message);
+                console.log("Could not require creep role '" + role + "': " + err.message + "("+err.filename+":"+err.lineNumber+")");
             }
         }
     },
@@ -44,7 +44,7 @@ module.exports = {
             },
             builder: {
                 parts: [WORK, WORK, CARRY, CARRY, MOVE, MOVE],
-                num: 5
+                num: 6
             },
             roadMaintainer: {
                 parts: [WORK, CARRY, CARRY, MOVE],

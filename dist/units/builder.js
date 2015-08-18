@@ -2,43 +2,46 @@
 var rampartHits = 2000000;
 var wallHits = 2000000;
 
-module.exports = function (creep) {
+module.exports = {
 
-    // If there's energy underfoot, grab it
-    var energyUnderfoot = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
-    if (creep.carry.energy < creep.carryCapacity && energyUnderfoot.length > 0) {
-        creep.pickup(energyUnderfoot[0]);
-    }
+    run: function (creep) {
 
-    // If the creep is out of energy, go get more
-    if(creep.carry.energy == 0) {
-         // @TODO : move this to prototype
-        var storage = creep.getNearestStorage();
-        // Source will be spawn in the early game, storage in the later game
-        var source = creep.getSpawn();
-        var sourceEnergy = source.energy;
-        if (storage != undefined) {
-            source = storage;
-            sourceEnergy = source.store.energy;
+        // If there's energy underfoot, grab it
+        var energyUnderfoot = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
+        if (creep.carry.energy < creep.carryCapacity && energyUnderfoot.length > 0) {
+            creep.pickup(energyUnderfoot[0]);
         }
 
-        creep.moveTo(source);
+        // If the creep is out of energy, go get more
+        if (creep.carry.energy == 0) {
+            // @TODO : move this to prototype
+            var storage = creep.getNearestStorage();
+            // Source will be spawn in the early game, storage in the later game
+            var source = creep.getSpawn();
+            var sourceEnergy = source.energy;
+            if (storage != undefined) {
+                source = storage;
+                sourceEnergy = source.store.energy;
+            }
 
-        if (sourceEnergy > creep.carryCapacity) {
-            source.transferEnergy(creep, creep.carryCapacity);
-        }
-    } else {
+            creep.moveTo(source);
 
-        // Main actions. Try to repair, then build, then upgrade, then reinforce
+            if (sourceEnergy > creep.carryCapacity) {
+                source.transferEnergy(creep, creep.carryCapacity);
+            }
+        } else {
 
-        if ( ! (repairStructures(creep) ||
+            // Main actions. Try to repair, then build, then upgrade, then reinforce
+
+            if (!(repairStructures(creep) ||
                 buildStructures(creep) ||
                 upgradeController(creep) ||
-                reinforceWalls(creep) ) ) {
-            console.log("Builder " +creep.name + " has nothing to do");
+                reinforceWalls(creep) )) {
+                console.log("Builder " + creep.name + " has nothing to do");
+            }
         }
     }
-};
+}
 
 
 function repairStructures(creep)

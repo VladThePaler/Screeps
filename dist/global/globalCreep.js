@@ -52,10 +52,18 @@ module.exports = function () {
     };
 
 
+    /**
+     *
+     * @param structureClass string
+     * @param structure string|object
+     */
     Creep.prototype.assignStructure = function (structureClass, structure) {
+        var structureId = (typeof structure == 'object') ? structure.id : structure;
         global.initStructureAssignments(structureClass);
-        Memory.assignedStructures[structureClass][structure.id] = this.memory.roleId;
+        this.unassignCreep(structureClass);
+        Memory.assignedStructures[structureClass][structureId] = this.memory.roleId;
         //console.log("assigned "+this.memory.roleId + " to " +structure.id);
+        return structureId;
     };
 
     Creep.prototype.getStructureAssignedToCreep = function (structureClass) {
@@ -66,6 +74,13 @@ module.exports = function () {
         return undefined;
     };
 
+    Creep.prototype.unassignCreep = function (structureClass) {
+        global.initStructureAssignments(structureClass);
+        for (var i in Memory.assignedStructures[structureClass]) {
+            if (Memory.assignedStructures[structureClass][i] == this.memory.roleId) Memory.assignedStructures[structureClass][i] = undefined;
+        }
+        return undefined;
+    };
 
 
 

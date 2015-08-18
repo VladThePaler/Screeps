@@ -14,31 +14,33 @@ var oppositeDirections = [
     BOTTOM_RIGHT
 ];
 
-// @TODO : Add wall watcher ranged type, modulo to spread around ramparts (how does this work with contiguous rampart chunks?)
+module.exports = {
 
-module.exports = function (creep) {
-    var hostileCreeps = creep.pos.findInRange(FIND_HOSTILE_CREEPS, maxApproachRange);
+    run: function (creep) {
 
-    // If no hostile creeps or hp less than threshold, retreat
-    if (hostileCreeps.length > 0 || (creep.hits/creep.hitsMax) < retreatThreshold) {
-        var hostileCreep = hostileCreeps[0];
-        var hostileRange = creep.pos.getRangeTo(hostileCreep);
+        var hostileCreeps = creep.pos.findInRange(FIND_HOSTILE_CREEPS, maxApproachRange);
 
-        // Try to stay at range
-        if (hostileRange > optimalRange) {
-            console.log("Moving to. Ranged distance to creep: "+hostileRange);
-            creep.moveTo(hostileCreep);
-        } else if (hostileRange < optimalRange) {
-            console.log("Moving away. Ranged distance to creep: "+hostileRange);
+        // If no hostile creeps or hp less than threshold, retreat
+        if (hostileCreeps.length > 0 || (creep.hits / creep.hitsMax) < retreatThreshold) {
+            var hostileCreep = hostileCreeps[0];
+            var hostileRange = creep.pos.getRangeTo(hostileCreep);
 
-            creep.keepAwayFromEnemies(optimalRange);
+            // Try to stay at range
+            if (hostileRange > optimalRange) {
+                console.log("Moving to. Ranged distance to creep: " + hostileRange);
+                creep.moveTo(hostileCreep);
+            } else if (hostileRange < optimalRange) {
+                console.log("Moving away. Ranged distance to creep: " + hostileRange);
+
+                creep.keepAwayFromEnemies(optimalRange);
+            }
+
+            // Always attack
+            creep.rangedAttack(hostileCreep);
         }
-
-        // Always attack
-        creep.rangedAttack(hostileCreep);
+        else {
+            var rallyPoint = (creep.room.find(FIND_FLAGS).length > 0) ? creep.pos.findClosest(FIND_FLAGS) : creep.getSpawn();
+            creep.moveTo(rallyPoint);
+        }
     }
-    else {
-        var rallyPoint = (creep.room.find(FIND_FLAGS).length > 0) ? creep.pos.findClosest(FIND_FLAGS) : creep.getSpawn();
-        creep.moveTo(rallyPoint);
-    }
-};
+}
