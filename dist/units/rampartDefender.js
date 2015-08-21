@@ -1,6 +1,15 @@
 
 module.exports = {
 
+    bodyParts: [
+        [RANGED_ATTACK, MOVE], // N/A
+        [RANGED_ATTACK, RANGED_ATTACK, MOVE],
+        [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE],
+        [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE],
+        [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE],
+        [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, MOVE]
+    ],
+
     run: function (creep) {
 
         if (creep.memory.assignedRampartId == undefined) {

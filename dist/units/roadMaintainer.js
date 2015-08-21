@@ -1,6 +1,15 @@
 
 module.exports = {
 
+    bodyParts: [
+        [WORK, CARRY, MOVE], // N/A
+        [WORK, CARRY, MOVE], // N/A
+        [WORK, CARRY, MOVE],
+        [WORK, CARRY, CARRY, MOVE],
+        [WORK, CARRY, CARRY, MOVE],
+        [WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
+    ],
+
     run: function (creep) {
 
 

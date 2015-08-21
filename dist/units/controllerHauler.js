@@ -1,6 +1,15 @@
 // Haul from a mine back to base
 module.exports = {
 
+    bodyParts: [
+        [CARRY, MOVE],
+        [CARRY, CARRY, MOVE],
+        [CARRY, CARRY, CARRY, MOVE],
+        [CARRY, CARRY, CARRY, MOVE],
+        [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
+        [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE]
+    ],
+
     run: function (creep) {
 
         if (creep.memory.state == undefined) creep.memory.state = 'collecting';
@@ -24,6 +33,10 @@ module.exports = {
 
             // If there's nearby energy, gather it
             if (creep.hasCarryCapacity() && energyInRange.length > 0 && creep.pos.getRangeTo(controllerUpgrader) > 3 || creep.pos.getRangeTo(source) <= 1) creep.memory.state = 'gathering';
+            else if (source.energy < 150) { // If the source doesn't have much energy, try to find dropped energy
+                var energy = creep.pos.findClosest(FIND_DROPPED_ENERGY);
+                creep.moveTo(energy);
+            }
             else creep.moveMeTo(source);
         }
 

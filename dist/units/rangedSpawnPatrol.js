@@ -16,6 +16,15 @@ var oppositeDirections = [
 
 module.exports = {
 
+    bodyParts: [
+        [RANGED_ATTACK, TOUGH, MOVE],
+        [RANGED_ATTACK, RANGED_ATTACK, TOUGH, MOVE],
+        [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, TOUGH, MOVE, MOVE],
+        [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, TOUGH, MOVE, MOVE],
+        [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, TOUGH, MOVE, MOVE],
+        [RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, RANGED_ATTACK, TOUGH, MOVE, MOVE, MOVE]
+    ],
+
     run: function (creep) {
 
         var hostileCreeps = creep.pos.findInRange(FIND_HOSTILE_CREEPS, maxApproachRange);

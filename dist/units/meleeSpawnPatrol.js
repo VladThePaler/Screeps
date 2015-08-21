@@ -3,6 +3,15 @@ var maxApproachRange = 7;
 
 module.exports = {
 
+    bodyParts: [
+        [ATTACK, TOUGH, MOVE],
+        [ATTACK, TOUGH, TOUGH, MOVE],
+        [ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, MOVE],
+        [ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, MOVE],
+        [ATTACK, ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, MOVE],
+        [ATTACK, ATTACK, ATTACK, ATTACK, TOUGH, TOUGH, TOUGH, MOVE]
+    ],
+
     run: function (creep) {
 
         var hostileCreeps = creep.pos.findInRange(FIND_HOSTILE_CREEPS, maxApproachRange);

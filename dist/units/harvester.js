@@ -1,9 +1,23 @@
 
 module.exports = {
 
+    bodyParts: [
+        [WORK, CARRY, MOVE],
+        [WORK, CARRY, CARRY, MOVE],
+        [WORK, WORK, CARRY, CARRY, MOVE],
+        [WORK, WORK, CARRY, CARRY, CARRY, MOVE],
+        [WORK, WORK, CARRY, CARRY, CARRY, MOVE],
+        [WORK, WORK, CARRY, CARRY, CARRY, MOVE]
+    ],
+
     run: function (creep) {
 
         if (creep.memory.state == undefined) creep.memory.state = 'mining';
+
+        var energyUnderfoot = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
+        if (creep.carry.energy < creep.carryCapacity && energyUnderfoot.length > 0) {
+            creep.pickup(energyUnderfoot[0]);
+        }
 
         if (creep.memory.state == 'mining') {
             var source = getSource(creep);
@@ -25,11 +39,11 @@ module.exports = {
                 creep.moveTo(nonEmptyExtensions[0]);
                 creep.transferEnergy(nonEmptyExtensions[0]);
             } else {
-                creep.moveTo(creep.getSpawn());
+                creep.moveTo(creep.getNearestSpawn());
 
                 // If there is no more space, drop the energy
-                if (creep.pos.getRangeTo(creep.getSpawn()) == 1 && creep.transferEnergy(creep.getSpawn()) == ERR_FULL) {
-                    console.log("No more space, drop the energy");
+                if (creep.pos.getRangeTo(creep.getNearestSpawn()) == 1 && creep.transferEnergy(creep.getNearestSpawn()) == ERR_FULL) {
+                    //console.log("No more space, drop the energy");
                     creep.dropEnergy();
                 }
             }
@@ -37,7 +51,7 @@ module.exports = {
         }
 
     }
-}
+};
 
 function getSource(creep)
 {

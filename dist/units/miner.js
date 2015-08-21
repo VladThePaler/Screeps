@@ -3,7 +3,19 @@ var homeRoom = 'E6N8';
 
 var directions = [FIND_EXIT_LEFT, FIND_EXIT_BOTTOM, FIND_EXIT_RIGHT];
 
+
 module.exports = {
+
+    bodyParts: [
+      [WORK, MOVE],
+      [WORK, WORK, MOVE],
+      [WORK, WORK, WORK, MOVE],
+      [WORK, WORK, WORK, WORK, MOVE],
+      [WORK, WORK, WORK, WORK, WORK, MOVE],
+      [WORK, WORK, WORK, WORK, WORK, MOVE]
+    ],
+
+
 
     run: function (creep) {
 
@@ -24,5 +36,7 @@ module.exports = {
             if (creep.carry.energy >= creep.carryCapacity)
                 creep.dropEnergy(creep.carryCapacity);
         }
-    }
-}
+    },
+
+
+};

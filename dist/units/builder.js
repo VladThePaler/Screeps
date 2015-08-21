@@ -1,10 +1,21 @@
 // @TODO : Change this, doesn't scale
 var rampartHits = 2000000;
-var wallHits = 2000000;
+var wallHits = 5000000;
 
 module.exports = {
 
+    bodyParts: [
+        [WORK, CARRY, MOVE],
+        [WORK, CARRY, CARRY, MOVE],
+        [WORK, WORK, CARRY, CARRY, MOVE],
+        [WORK, WORK, CARRY, CARRY, MOVE, MOVE],
+        [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE],
+        [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE],
+    ],
+
     run: function (creep) {
+
+        //handleRoomChange();/
 
         // If there's energy underfoot, grab it
         var energyUnderfoot = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
@@ -17,17 +28,25 @@ module.exports = {
             // @TODO : move this to prototype
             var storage = creep.getNearestStorage();
             // Source will be spawn in the early game, storage in the later game
-            var source = creep.getSpawn();
-            var sourceEnergy = source.energy;
-            if (storage != undefined) {
-                source = storage;
-                sourceEnergy = source.store.energy;
-            }
+            var source = creep.getNearestSpawn();
 
-            creep.moveTo(source);
+            if (source == undefined) {
+                // If there is no spawn yet we are in a new room, find dropped energy
+                var energy = creep.pos.findClosest(FIND_DROPPED_ENERGY);
+                creep.moveTo(energy);
+            } else {
 
-            if (sourceEnergy > creep.carryCapacity) {
-                source.transferEnergy(creep, creep.carryCapacity);
+                var sourceEnergy = source.energy;
+                if (storage != undefined) {
+                    source = storage;
+                    sourceEnergy = source.store.energy;
+                }
+                creep.moveTo(source);
+
+                if (sourceEnergy > creep.carryCapacity) {
+                    source.transferEnergy(creep, creep.carryCapacity);
+                }
+
             }
         } else {
 
@@ -123,16 +142,17 @@ function buildStructures(creep)
 
 function upgradeController(creep)
 {
-    return false;
-    if (creep.memory.roleId%3 == 0) {
+    if (creep.memory.roleId%3 == 2) {
         // If there are no constructions, upgrade the controller
         var controller = creep.room.find(FIND_STRUCTURES, {
             filter: {structureType: STRUCTURE_CONTROLLER}
         });
-
-        creep.moveTo(controller[0]);
-        creep.upgradeController(controller[0]);
-        return true;
+        if (controller[0].level < 3) {
+            creep.moveTo(controller[0]);
+            creep.upgradeController(controller[0]);
+            return true;
+        }
+        else return false;
     }
     return false;
 }
@@ -152,6 +172,7 @@ function reinforceWalls(creep)
                 //return ( s.structureType == STRUCTURE_RAMPART && (s.hits < s.hitsMax - 25000) ) || ( s.structureType == STRUCTURE_WALL && s.hits < 975000);
             }
         });
+        if (reinforce == undefined) return false;
         creep.assignStructure('reinforce', reinforce);
         assignedWall = reinforce;
         console.log("assigned " + creep.name + " to reinforce " + reinforce);

@@ -2,6 +2,15 @@ var retreatDistance = 3;
 
 module.exports = {
 
+    bodyParts: [
+        [HEAL, MOVE],
+        [HEAL, MOVE],
+        [HEAL, MOVE, MOVE],
+        [HEAL, HEAL, MOVE, MOVE],
+        [HEAL, HEAL, MOVE, MOVE, MOVE],
+        [HEAL, HEAL, HEAL, MOVE, MOVE, MOVE]
+    ],
+
     run: function (creep) {
 
         var friendlyCreeps = creep.room.find(FIND_MY_CREEPS);

@@ -48,7 +48,7 @@ module.exports = function () {
 
         creepMemory['roleId'] = nameCount; // use this for jitter
         creepMemory['spawnedAt'] = this;
-        console.log("Spawning role "+ creepMemory['role'] + ", "+name);
+        console.log(this.name + " Spawning role "+ creepMemory['role'] + ", "+name);
         var newCreep = this.createCreep(creepData[0], name, creepMemory);
         this.memory.creepQueue.shift();
         return newCreep;

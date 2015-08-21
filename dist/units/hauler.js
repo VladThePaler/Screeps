@@ -1,9 +1,18 @@
 // Haul from a mine back to base
 var homeRoom = 'E6N8';
-var directions = [FIND_EXIT_LEFT, FIND_EXIT_BOTTOM, FIND_EXIT_RIGHT];
+var directions = [FIND_EXIT_LEFT, FIND_EXIT_LEFT, FIND_EXIT_LEFT, FIND_EXIT_LEFT ];
 var haulersPerMiner = 2;
 
 module.exports = {
+
+    bodyParts: [
+        [CARRY, MOVE],
+        [CARRY, CARRY, MOVE],
+        [CARRY, CARRY, CARRY, MOVE],
+        [CARRY, CARRY, CARRY, MOVE],
+        [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
+        [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE]
+    ],
 
     run: function (creep) {
 
@@ -29,6 +38,7 @@ module.exports = {
             var source = sources[(creep.memory.roleId % sources.length)];
             // If there's nearby energy, gather it
             if (creep.hasCarryCapacity() && energyInRange.length > 0 && creep.pos.getRangeTo(creep.getSpawn()) > 3) creep.memory.state = 'gathering';
+            else if (!creep.hasCarryCapacity()) creep.memory.state = 'returning';
             else if (creep.pos.getRangeTo(source) <= 2) creep.memory.state = 'gathering';
             else creep.moveMeTo(source);
         }
@@ -45,7 +55,9 @@ module.exports = {
 
         // Return from the mine when full, drop off at extensions, spawns, or drop on the ground
         if (creep.memory.state == 'returning') {
-            if (creep.room.name != homeRoom) {
+
+            // If there's no spawn in the room, return all the way home
+            if (creep.room.name != homeRoom && creep.getNearestSpawn() == undefined) {
                 //console.log(creep.name + " returning to home room");
                 var exit = creep.room.findExitTo(homeRoom);
                 creep.moveMeTo(exit);
