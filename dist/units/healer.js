@@ -8,7 +8,8 @@ module.exports = {
         [HEAL, MOVE, MOVE],
         [HEAL, HEAL, MOVE, MOVE],
         [HEAL, HEAL, MOVE, MOVE, MOVE],
-        [HEAL, HEAL, HEAL, MOVE, MOVE, MOVE]
+        [HEAL, HEAL, HEAL, MOVE, MOVE, MOVE],
+        [HEAL, HEAL, HEAL, HEAL, MOVE, MOVE, MOVE, MOVE]
     ],
 
     run: function (creep) {

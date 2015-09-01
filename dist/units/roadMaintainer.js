@@ -1,3 +1,4 @@
+// Wander around maintaining roads.
 
 module.exports = {
 
@@ -8,6 +9,7 @@ module.exports = {
         [WORK, CARRY, CARRY, MOVE],
         [WORK, CARRY, CARRY, MOVE],
         [WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
+        [WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE]
     ],
 
     run: function (creep) {
@@ -69,7 +71,7 @@ module.exports = {
                     creep.repair(site);
                     //console.log(creep.name + " maintaining road "+site);
                 }
-            } else console.log("Road maintainer is bored");
+            } //else console.log("Road maintainer is bored");
 
             // Repair roads underfoot as we pass
             var underfoot = creep.pos.findInRange(FIND_STRUCTURES, 0, {

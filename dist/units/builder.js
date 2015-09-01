@@ -1,6 +1,6 @@
 // @TODO : Change this, doesn't scale
-var rampartHits = 2000000;
-var wallHits = 5000000;
+var rampartHits = 5000000;
+var wallHits = 7000000;
 
 module.exports = {
 
@@ -11,11 +11,16 @@ module.exports = {
         [WORK, WORK, CARRY, CARRY, MOVE, MOVE],
         [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE],
         [WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE],
+        [WORK, WORK, WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]
     ],
 
     run: function (creep) {
 
-        //handleRoomChange();/
+        // Prevent distractions when moving to a target room
+        if (creep.memory.targetRoom != undefined && creep.memory.targetRoom != creep.room.name) {
+            creep.memory.buildSite = undefined;
+            return;
+        }
 
         // If there's energy underfoot, grab it
         var energyUnderfoot = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
@@ -159,7 +164,9 @@ function upgradeController(creep)
 
 function reinforceWalls(creep)
 {
-    var spawn = creep.getSpawn();
+    var spawn = creep.getNearestSpawn();
+    if (spawn == undefined) return false;
+
     var assignedWall = creep.getStructureAssignedToCreep('reinforce');
 
     // If no wall assigned, assign a wall
@@ -187,7 +194,7 @@ function reinforceWalls(creep)
         // If the structure is built up, deassign the builder
         if
         (
-            (assignedWall.structureType == STRUCTURE_RAMPART && assignedWall.hits >= assignedWall.hitsMax)
+            (assignedWall.structureType == STRUCTURE_RAMPART && assignedWall.hits >= 20000000)
             ||
             (assignedWall.structureType == STRUCTURE_WALL && assignedWall.hits >= wallHits)
         ) {

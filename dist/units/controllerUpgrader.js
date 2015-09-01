@@ -8,7 +8,8 @@ module.exports = {
         [WORK, WORK, WORK, CARRY, MOVE],
         [WORK, WORK, WORK, WORK, CARRY, MOVE],
         [WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE],
-        [WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE]
+        [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE],
+        [WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, WORK, CARRY, MOVE]
     ],
 
     run: function (creep) {
@@ -18,12 +19,17 @@ module.exports = {
             creep.pickup(energyUnderfoot[0]);
         }
 
-        if (creep.room.name != rooms[creep.memory.roleId-1])
-        {
-            var exitDir = creep.room.findExitTo(rooms[creep.memory.roleId-1]);
-            var exit = creep.pos.findClosest(exitDir);
-            creep.moveTo(exit);
-        } else {
+        var storage = creep.getNearestStorage();
+        if (storage != undefined && creep.carry.energy < (creep.carryCapacity/2)) {
+            storage.transferEnergy(creep);
+        }
+
+        //if (creep.room.name != rooms[creep.memory.roleId-1])
+        //{
+        //    var exitDir = creep.room.findExitTo(rooms[creep.memory.roleId-1]);
+        //    var exit = creep.pos.findClosest(exitDir);
+        //    creep.moveTo(exit);
+        //} else {
 
 
             var controller = creep.getNearestController();
@@ -32,7 +38,7 @@ module.exports = {
             if (!controller.my)
                 creep.claimController(controller);
             creep.upgradeController(controller);
-        }
+        //}
     }
 };
 

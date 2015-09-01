@@ -1,41 +1,50 @@
 // Mine a source, drop all energy on the ground for haulers to pick up
-var homeRoom = 'E6N8';
+// Alternatively, drop energy into a link
 
-var directions = [FIND_EXIT_LEFT, FIND_EXIT_BOTTOM, FIND_EXIT_RIGHT];
+var directions = [FIND_EXIT_RIGHT, FIND_EXIT_BOTTOM, FIND_EXIT_LEFT];
 
 
 module.exports = {
 
     bodyParts: [
-      [WORK, MOVE],
-      [WORK, WORK, MOVE],
-      [WORK, WORK, WORK, MOVE],
-      [WORK, WORK, WORK, WORK, MOVE],
-      [WORK, WORK, WORK, WORK, WORK, MOVE],
-      [WORK, WORK, WORK, WORK, WORK, MOVE]
+      [WORK, CARRY, MOVE],
+      [WORK, WORK, CARRY, MOVE, MOVE],
+      [WORK, WORK, WORK, CARRY, MOVE, MOVE],
+      [WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
+      [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE],
+      [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE],
+      [WORK, WORK, WORK, WORK, WORK, CARRY, MOVE, MOVE, MOVE, MOVE]
     ],
 
+    // Assign to a source on spawn
+    onSpawn: function (creep) {
+        creep.assignMine(creep.room.name);
+    },
 
+    // Unassign at end of life
+    onAgeOut: function(creep) {
+        creep.unassignMine();
+    },
 
     run: function (creep) {
+        var source = creep.getAssignedMine();
+        creep.moveMeTo(source);
+        creep.harvest(source);
 
-        var sources = creep.room.find(FIND_SOURCES);
+        var link = creep.pos.findInRange(FIND_MY_STRUCTURES, 1, {filter: {structureType: STRUCTURE_LINK}});
+        if (link.length > 0) {
+            var energy = creep.pos.findInRange(FIND_DROPPED_ENERGY, 1);
+            if (energy.length > 0) creep.pickup(energy[0]);
 
-        // If there are more miners than sources, find another room
-        if (creep.memory.roleId > sources.length && creep.room.name == homeRoom) {
-            // Pick a direction
-            var direction = directions[(creep.memory.roleId - sources.length - 1)];
-            var exit = creep.pos.findClosest(direction);
-            if (!creep.spawning && exit == undefined) console.log(creep.name + " can't find exit " + direction);
-            else creep.moveMeTo(exit);
-        } else {
-
-            var source = sources[(creep.memory.roleId % sources.length)];
-            creep.moveMeTo(source);
-            creep.harvest(source);
-            if (creep.carry.energy >= creep.carryCapacity)
-                creep.dropEnergy(creep.carryCapacity);
+            if (creep.carry.energy >= (creep.carryCapacity/1.5)) {
+                creep.transferEnergy(link[0]);
+                return;
+            }
         }
+
+        if (creep.carry.energy >= creep.carryCapacity)
+            creep.dropEnergy(creep.carryCapacity);
+
     },
 
 

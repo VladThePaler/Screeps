@@ -7,7 +7,8 @@ module.exports = {
         [WORK, WORK, CARRY, CARRY, MOVE],
         [WORK, WORK, CARRY, CARRY, CARRY, MOVE],
         [WORK, WORK, CARRY, CARRY, CARRY, MOVE],
-        [WORK, WORK, CARRY, CARRY, CARRY, MOVE]
+        [WORK, WORK, CARRY, CARRY, CARRY, MOVE, MOVE],
+        [WORK, WORK, WORK, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]
     ],
 
     run: function (creep) {

@@ -3,11 +3,12 @@ module.exports = {
 
     bodyParts: [
         [CARRY, MOVE],
-        [CARRY, CARRY, MOVE],
-        [CARRY, CARRY, CARRY, MOVE],
-        [CARRY, CARRY, CARRY, MOVE],
+        [CARRY, CARRY, MOVE, MOVE],
+        [CARRY, CARRY, CARRY, MOVE, MOVE],
+        [CARRY, CARRY, CARRY, MOVE, MOVE],
         [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
-        [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE]
+        [CARRY, CARRY, CARRY, CARRY, MOVE, MOVE],
+        [CARRY, CARRY, CARRY, CARRY, CARRY, MOVE, MOVE, MOVE]
     ],
 
     run: function (creep) {
@@ -57,7 +58,7 @@ module.exports = {
             creep.moveMeTo(controllerUpgrader);
             creep.transferEnergy(controllerUpgrader, (controllerUpgrader.energyCapacity - controllerUpgrader.carry.energy));
 
-            if (creep.carry.energy < 75) {
+            if (creep.carry.energy < creep.carryCapacity/2) {
                 creep.dropEnergy(creep.carry.energy);
                 creep.memory.state = 'collecting';
             }
